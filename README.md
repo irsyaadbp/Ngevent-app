@@ -35,6 +35,7 @@ or
   - [x] Carousel For You Section
 - [ ] Category Screen
 - [ ] Search Screen
+  - [ ] Information Search Found
   - [ ] Filter Category
   - [ ] Filter Price Range
   - [ ] Filter Event Date Range
