@@ -27,3 +27,6 @@ or
 ``yarn android``
 or 
 ``npm run android``
+
+## Screenshot
+**(Will be updated radpidly)**
