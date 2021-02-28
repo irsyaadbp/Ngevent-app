@@ -1,7 +1,7 @@
 # Ngevent-app
 Buy ticket easily with Ngeven
 
-You can try the [demo here](https://drive.google.com/file/d/1IXHyz6bs49acfcyOeT-h1DWooCojaog0/view?usp=sharing)
+You can try the [demo here](https://drive.google.com/drive/folders/1Xm-imq79stEybjw0OTXVtmodQ4tJXlzJ?usp=sharing)
 
 **IMPORTANT!**
 If you want try the demo, please access the backend firstly, this is [the link](https://ngevent-app.herokuapp.com/api)
