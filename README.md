@@ -11,10 +11,10 @@ and [this is](https://github.com/irsyaadbp/Ngevent-backend) the repository for b
 
 ## Build With
 1. Typescript
-2. React-Native
-4. react-query
-5. react-native-paper
-6. react-navigation
+2. React Native
+4. React Query
+5. React Native Paper
+6. React Navigation
 
 ## Setup
 1. Clone this repository
@@ -60,4 +60,5 @@ or
 - [x] Register Screen
 
 ## Screenshot
+You can see the prototype apps via [this link](http://bit.ly/figma-ngevent)
 **(Will be updated rapidly)**
