@@ -29,4 +29,4 @@ or
 ``npm run android``
 
 ## Screenshot
-**(Will be updated radpidly)**
+**(Will be updated rapidly)**
