@@ -44,6 +44,7 @@ const Upcoming: React.FC<UpcomingProps> = ({}) => {
             subtitle: `$${item.ticket_price}`,
             badge: item.category.category_name,
           }}
+          style={{marginBottom: 8}}
           onPress={() => navigation.navigate('Detail Event', {id: item.id})}
         />
       );
