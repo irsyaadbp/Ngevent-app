@@ -28,5 +28,36 @@ or
 or 
 ``npm run android``
 
+## Roadmap
+- [ ] Home Screen
+  - [ ] Discover Category Section
+  - [x] Upcoming Section
+  - [x] Carousel For You Section
+- [ ] Category Screen
+- [ ] Search Screen
+  - [ ] Filter Category
+  - [ ] Filter Price Range
+  - [ ] Filter Event Date Range
+  - [ ] Sort by Price ASC-DESC
+  - [ ] Sort by Event Date ASC-DESC
+  - [x] Search List
+  - [x] Search Function
+  - [x] Pagination Load More
+- [ ] Detail Event Screen
+  - [ ] Detail Event Section
+  - [ ] Book Ticket
+- [ ] Booked Screen
+  - [ ] Your Upcoming Event Section
+  - [ ] Booked List Section
+- [ ] Detail Booked Ticket Screen
+  - [ ] Detail Ticket Section
+  - [ ] Barcode Section
+- [ ] Profile
+  - [ ] Detail Profile Section
+  - [ ] Total Event Booked Section
+  - [x] Logout
+- [x] Login Screen
+- [x] Register Screen
+
 ## Screenshot
 **(Will be updated rapidly)**
