@@ -1,3 +1,9 @@
+export type ParamRoute = {
+  DetailEvent: {
+    id: number;
+  };
+};
+
 export type ResponseType<T> = {
   success: boolean;
   message: string;

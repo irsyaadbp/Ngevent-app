@@ -15,13 +15,19 @@ import theme from '@ngevent/styles/theme';
 import Router from '@ngevent/router';
 import UserProvider from '@ngevent/provider/UserProvider';
 import {QueryClient, QueryClientProvider} from 'react-query';
+import Icon from 'react-native-vector-icons/Feather';
+
 const queryClient = new QueryClient();
 const App = () => {
   return (
     <UserProvider>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <PaperProvider theme={theme}>
+          <PaperProvider
+            theme={theme}
+            settings={{
+              icon: (props) => <Icon {...props} />,
+            }}>
             <Router />
           </PaperProvider>
         </NavigationContainer>

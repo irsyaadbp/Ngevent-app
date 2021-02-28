@@ -11,6 +11,7 @@ import SliderItem, {
 } from './SliderItem';
 import {EventData, getAllEvents} from '@ngevent/api/event';
 import {ActivityIndicator, Text, useTheme} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 
 export const ENTRIES1 = [
   {
@@ -61,6 +62,7 @@ export interface CarouselHomeProps {
 const CarouselHome: React.FC<CarouselHomeProps> = ({style}) => {
   const {colors} = useTheme();
   const sliderRef = React.useRef<Carousel<CarouselData>>(null);
+  const navigation = useNavigation();
   // const [sliderActive, setSliderActive] = React.useState<number>(0);
 
   const {data, isLoading, refetch} = useQuery(
@@ -77,11 +79,11 @@ const CarouselHome: React.FC<CarouselHomeProps> = ({style}) => {
         <SliderItem
           data={item}
           parallaxProps={parallaxProps}
-          onPress={() => Alert.alert('Pressed')}
+          onPress={() => navigation.navigate('Detail Event', {id: item.id})}
         />
       );
     },
-    [],
+    [navigation],
   );
 
   const renderCarousel = React.useCallback(() => {

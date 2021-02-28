@@ -24,7 +24,7 @@ const Register: React.FC = () => {
             navigation.dispatch(
               CommonActions.reset({
                 index: 1,
-                routes: [{name: 'Login'}],
+                routes: [{name: 'Dashboard'}],
               }),
             );
           },

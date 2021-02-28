@@ -4,6 +4,7 @@ import {Animated, StyleProp, ViewStyle} from 'react-native';
 import {Button as ButtonPaper, useTheme} from 'react-native-paper';
 
 interface IButtonProps {
+  icon?: string | undefined;
   mode?: 'text' | 'outlined' | 'contained' | undefined;
   onPress?: (() => void) | undefined;
   labelColor?: ColorsType | undefined;
@@ -12,6 +13,7 @@ interface IButtonProps {
   background?: ColorsType | undefined;
 }
 const Button: React.FC<IButtonProps> = ({
+  icon,
   mode = 'contained',
   labelColor = '',
   shadow = true,
@@ -49,6 +51,7 @@ const Button: React.FC<IButtonProps> = ({
 
   return (
     <ButtonPaper
+      icon={icon}
       mode={mode}
       onPress={onPress}
       uppercase={false}

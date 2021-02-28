@@ -153,6 +153,14 @@ export const globalStyles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 16,
   },
+  backgroundLoading: {
+    backgroundColor: theme.colors.grayLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
 });
 
 export default theme;

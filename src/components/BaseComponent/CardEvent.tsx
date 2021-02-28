@@ -1,4 +1,4 @@
-import {globalStyles} from '@ngevent/styles/theme';
+import theme, {globalStyles} from '@ngevent/styles/theme';
 import * as React from 'react';
 import {
   StyleProp,
@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {Badge, Text} from 'react-native-paper';
+import {ActivityIndicator, Badge, Text, useTheme} from 'react-native-paper';
 
 export type CardEventData = {
   badge?: string;
@@ -23,6 +23,7 @@ interface CardEventProps {
   onPress?: () => void;
   disabled?: boolean;
 }
+
 const CardEvent: React.FC<CardEventProps> = ({
   data,
   style,
@@ -60,6 +61,15 @@ const CardEvent: React.FC<CardEventProps> = ({
   );
 };
 
+export const CardEventLoading: React.FC = () => {
+  const {colors} = useTheme();
+  return (
+    <View style={styles.loading}>
+      <ActivityIndicator color={colors.background} size={32} />
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   image: {
     height: 120,
@@ -68,6 +78,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   titleSection: {flex: 1, paddingHorizontal: 12},
+  loading: {
+    ...globalStyles.backgroundLoading,
+    height: 144,
+  },
 });
 
 export default CardEvent;

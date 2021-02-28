@@ -1,6 +1,12 @@
 import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Dashboard, Login, Register, SplashScreen} from '@ngevent/screens';
+import {
+  Dashboard,
+  DetailEvent,
+  Login,
+  Register,
+  SplashScreen,
+} from '@ngevent/screens';
 
 const RouteStack = createStackNavigator();
 
@@ -11,6 +17,7 @@ const Router: React.FC = () => {
       <RouteStack.Screen name="Login" component={Login} />
       <RouteStack.Screen name="Register" component={Register} />
       <RouteStack.Screen name="Dashboard" component={Dashboard} />
+      <RouteStack.Screen name="Detail Event" component={DetailEvent} />
     </RouteStack.Navigator>
   );
 };

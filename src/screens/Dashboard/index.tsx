@@ -7,10 +7,11 @@ import {
   TabElementDisplayOptions,
 } from 'react-native-animated-nav-tab-bar';
 import Home from './Home';
+import Search from './Search';
 import Icon from 'react-native-vector-icons/Feather';
-import {globalStyles} from '@ngevent/styles/theme';
 import Profile from './Profile';
 import {Alert, BackHandler} from 'react-native';
+import Booked from './Booked';
 
 const Tabs = AnimatedTabBarNavigator();
 
@@ -62,7 +63,7 @@ const Dashboard: React.FC = () => {
         />
         <Tabs.Screen
           name="Search"
-          component={Home}
+          component={Search}
           options={{
             tabBarIcon: ({focused, color}) => (
               <Icon name="search" size={24} color={color} />
@@ -71,7 +72,7 @@ const Dashboard: React.FC = () => {
         />
         <Tabs.Screen
           name="Booked"
-          component={Home}
+          component={Booked}
           options={{
             tabBarIcon: ({focused, color}) => (
               <Icon name="calendar" size={24} color={color} />

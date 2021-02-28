@@ -1,5 +1,5 @@
 import {sendLogout, UserData} from '@ngevent/api/auth';
-import {Button} from '@ngevent/components/BaseComponent';
+import {Button, LoadingBlock} from '@ngevent/components/BaseComponent';
 import {useUserContext} from '@ngevent/provider/UserProvider';
 import theme from '@ngevent/styles/theme';
 import {CommonActions, useNavigation} from '@react-navigation/native';
@@ -9,15 +9,15 @@ import {Text} from 'react-native-paper';
 import {useMutation} from 'react-query';
 
 const Profile: React.FC = () => {
-  const {setUser} = useUserContext();
+  const {user, setUser} = useUserContext();
   const navigation = useNavigation();
   const {mutate, isLoading} = useMutation(sendLogout, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       setUser({} as UserData);
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
-          routes: [{name: 'Dashboard'}],
+          routes: [{name: 'Login'}],
         }),
       );
     },
@@ -34,7 +34,10 @@ const Profile: React.FC = () => {
   };
   return (
     <View style={styles.screen}>
-      <Text>Profile</Text>
+      {isLoading && <LoadingBlock />}
+      <Text>
+        Helo, <Text style={{fontWeight: 'bold'}}>{user.fullname}</Text>{' '}
+      </Text>
       <Button mode="text" labelColor="danger" onPress={onSubmit}>
         Logout
       </Button>
