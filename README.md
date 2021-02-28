@@ -1,6 +1,8 @@
 # Ngevent-app
 Buy ticket easily with Ngevent
 
+**(This project will be updated continuously)**
+
 ## Build With
 1. Typescript
 2. React-Native
