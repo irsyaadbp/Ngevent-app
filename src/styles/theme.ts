@@ -30,7 +30,8 @@ export type ColorsType =
   | 'accentLight'
   | 'dangerLight'
   | 'warningLight'
-  | 'grayLight';
+  | 'grayLight'
+  | 'gray';
 
 type PaperColors = PaperTheme['colors'];
 export type Colors = PaperColors & CustomColors;
@@ -137,16 +138,23 @@ export const globalStyles = StyleSheet.create({
     marginBottom: 8,
   },
   card: {
-    // shadowColor: theme.colors.grayLight,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 4,
-    // },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 6,
-    // elevation: 6,
     borderWidth: 1,
     borderColor: theme.colors.gray,
+    flexDirection: 'row',
+    padding: 12,
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    borderRadius: 16,
+  },
+  cardShadow: {
+    shadowColor: theme.colors.grayLight,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
     flexDirection: 'row',
     padding: 12,
     backgroundColor: '#fff',
@@ -160,6 +168,12 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 16,
     marginHorizontal: 16,
     marginTop: 16,
+  },
+  icon: {
+    height: 24,
+    width: 24,
+    resizeMode: 'contain',
+    alignItems: 'center',
   },
 });
 

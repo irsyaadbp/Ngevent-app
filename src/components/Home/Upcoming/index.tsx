@@ -1,15 +1,18 @@
 import {EventData, getAllEvents} from '@ngevent/api/event';
 import {globalStyles} from '@ngevent/styles/theme';
 import * as React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, StyleProp, View, ViewStyle} from 'react-native';
 import {Text} from 'react-native-paper';
 import {useQuery} from 'react-query';
 import moment from 'moment';
 import {CardEvent, CardEventLoading} from '@ngevent/components/BaseComponent';
 import {formatDate} from '@ngevent/utils/common';
 import {useNavigation} from '@react-navigation/native';
-export interface UpcomingProps {}
-const Upcoming: React.FC<UpcomingProps> = ({}) => {
+export interface UpcomingProps {
+  isRefresh?: boolean;
+  style?: StyleProp<ViewStyle>;
+}
+const Upcoming: React.FC<UpcomingProps> = ({isRefresh, style}) => {
   const navigation = useNavigation();
   const startDate = React.useMemo(() => moment().toISOString(), []);
   const endDate = React.useMemo(
@@ -33,6 +36,12 @@ const Upcoming: React.FC<UpcomingProps> = ({}) => {
     {},
   );
 
+  React.useEffect(() => {
+    if (isRefresh) {
+      refetch();
+    }
+  }, [isRefresh, refetch]);
+
   const renderItem = React.useCallback(
     ({item}: {item: EventData}) => {
       return (
@@ -41,7 +50,7 @@ const Upcoming: React.FC<UpcomingProps> = ({}) => {
             title: item.event_name,
             image: item.poster,
             description: `${item.location}, ${formatDate(item.event_date)}`,
-            subtitle: `$${item.ticket_price}`,
+            subtitle: `$${Number(item.ticket_price)}`,
             badge: item.category.category_name,
           }}
           style={{marginBottom: 8}}
@@ -68,7 +77,7 @@ const Upcoming: React.FC<UpcomingProps> = ({}) => {
   }, [data, isLoading, renderItem]);
 
   return (
-    <View style={{marginTop: 44}}>
+    <View style={[{marginTop: 44}, style]}>
       <Text style={globalStyles.titleSection}>Upcoming</Text>
       {renderFlatlist()}
     </View>

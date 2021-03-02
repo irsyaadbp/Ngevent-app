@@ -11,6 +11,7 @@ interface IButtonProps {
   shadow?: boolean;
   style?: Animated.WithAnimatedValue<StyleProp<ViewStyle>> | undefined;
   background?: ColorsType | undefined;
+  loading?: boolean;
 }
 const Button: React.FC<IButtonProps> = ({
   icon,
@@ -21,11 +22,12 @@ const Button: React.FC<IButtonProps> = ({
   onPress,
   children,
   background,
+  loading = false,
 }) => {
   const {colors} = useTheme();
 
   const styleShadow = React.useMemo(() => {
-    if (mode !== 'text' && shadow) {
+    if (mode === 'contained' && shadow) {
       return globalStyles.shadow;
     }
     return {};
@@ -57,7 +59,8 @@ const Button: React.FC<IButtonProps> = ({
       uppercase={false}
       labelStyle={{color: colorLabel}}
       color={backgroundColor}
-      style={[styleShadow, style]}>
+      style={[styleShadow, style]}
+      loading={loading}>
       {children}
     </ButtonPaper>
   );

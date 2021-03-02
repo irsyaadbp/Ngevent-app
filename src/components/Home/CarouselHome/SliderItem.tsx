@@ -5,7 +5,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {AdditionalParallaxProps} from 'react-native-snap-carousel';
 import LinearGradient from 'react-native-linear-gradient';
-import {Badge, useTheme} from 'react-native-paper';
+import {ActivityIndicator, Badge, useTheme} from 'react-native-paper';
 
 import {Text} from 'react-native-paper';
 import {BadgePrice} from '@ngevent/components/BaseComponent';
@@ -32,7 +32,10 @@ const SliderItem: React.FC<SliderItemProps> = ({data, onPress}) => {
         start={{x: 0, y: 1}}
         end={{x: 0, y: 0}}
         style={styles.containerContent}>
-        <BadgePrice price={data.ticket_price} style={styles.badgePrice} />
+        <BadgePrice
+          price={Number(data.ticket_price)}
+          style={styles.badgePrice}
+        />
         <View style={styles.description}>
           <Badge visible style={globalStyles.badge} size={28}>
             {data.category.category_name}
@@ -51,6 +54,15 @@ const SliderItem: React.FC<SliderItemProps> = ({data, onPress}) => {
   );
 };
 
+export const SliderItemLoading: React.FC = () => {
+  const {colors} = useTheme();
+  return (
+    <View style={styles.loading}>
+      <ActivityIndicator color={colors.background} size={32} />
+    </View>
+  );
+};
+
 function wp(percentage: number) {
   const value = (percentage * SCREEN_WIDTH) / 100;
   return Math.round(value);
@@ -65,6 +77,16 @@ export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 const entryBorderRadius = 16;
 
 const styles = StyleSheet.create({
+  loading: {
+    width: itemWidth,
+    height: slideHeight,
+    backgroundColor: theme.colors.grayLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
   slideInnerContainer: {
     width: itemWidth,
     height: slideHeight,

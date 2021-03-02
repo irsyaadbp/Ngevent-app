@@ -8,6 +8,7 @@ import SliderItem, {
   itemWidth,
   sliderWidth,
   slideHeight,
+  SliderItemLoading,
 } from './SliderItem';
 import {EventData, getAllEvents} from '@ngevent/api/event';
 import {ActivityIndicator, Text, useTheme} from 'react-native-paper';
@@ -57,10 +58,13 @@ export const ENTRIES1 = [
 ];
 
 export interface CarouselHomeProps {
+  isRefresh?: boolean;
   style?: StyleProp<ViewStyle>;
 }
-const CarouselHome: React.FC<CarouselHomeProps> = ({style}) => {
-  const {colors} = useTheme();
+const CarouselHome: React.FC<CarouselHomeProps> = ({
+  isRefresh = false,
+  style,
+}) => {
   const sliderRef = React.useRef<Carousel<CarouselData>>(null);
   const navigation = useNavigation();
   // const [sliderActive, setSliderActive] = React.useState<number>(0);
@@ -69,6 +73,12 @@ const CarouselHome: React.FC<CarouselHomeProps> = ({style}) => {
     ['events', {orderBy: 'asc', page: 1, sortBy: 'event_date'}],
     ({queryKey}) => getAllEvents(queryKey[1]),
   );
+
+  React.useEffect(() => {
+    if (isRefresh) {
+      refetch();
+    }
+  }, [isRefresh, refetch]);
 
   const renderSliderItem = React.useCallback(
     (
@@ -88,11 +98,7 @@ const CarouselHome: React.FC<CarouselHomeProps> = ({style}) => {
 
   const renderCarousel = React.useCallback(() => {
     if (isLoading) {
-      return (
-        <View style={styles.loading}>
-          <ActivityIndicator color={colors.background} />
-        </View>
-      );
+      return <SliderItemLoading />;
     }
 
     return (
@@ -112,7 +118,7 @@ const CarouselHome: React.FC<CarouselHomeProps> = ({style}) => {
         // onSnapToItem={(index) => setSliderActive(index)}
       />
     );
-  }, [colors.background, data, isLoading, renderSliderItem]);
+  }, [data, isLoading, renderSliderItem]);
 
   return (
     <View style={style}>
@@ -125,16 +131,6 @@ const CarouselHome: React.FC<CarouselHomeProps> = ({style}) => {
 const styles = StyleSheet.create({
   slider: {
     overflow: 'visible', // for custom animations
-  },
-  loading: {
-    width: itemWidth,
-    height: slideHeight,
-    backgroundColor: theme.colors.grayLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 16,
-    marginHorizontal: 16,
-    marginTop: 16,
   },
 });
 

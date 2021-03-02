@@ -15,6 +15,7 @@ const Search: React.FC = () => {
         style={{flexDirection: 'row', marginBottom: 4, paddingHorizontal: 16}}>
         <Searchbar
           icon="search"
+          clearIcon="x"
           placeholder="Search"
           onChangeText={(search) => setQuery(search)}
           value={query}

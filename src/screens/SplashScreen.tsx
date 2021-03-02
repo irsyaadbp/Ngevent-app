@@ -5,7 +5,7 @@ import {getUserData} from '@ngevent/utils/common';
 import {SCREEN_HEIGHT} from '@ngevent/utils/constants';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
 
 const SplashScreen: React.FC = () => {

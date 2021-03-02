@@ -1,4 +1,4 @@
-import {ResponsePaginationType} from '@ngevent/types/propTypes';
+import {ResponsePaginationType, ResponseType} from '@ngevent/types/propTypes';
 import {CategoryData} from './category';
 import server from './server';
 
@@ -35,6 +35,33 @@ export async function getAllEvents({
   const {data} = await server.get<ResponseEvents>('events', {
     params: {page, ...params},
   });
+
+  if (data.success) {
+    return data;
+  }
+  throw new Error(data.message || 'Some error occured');
+}
+
+export type DetailEventData = {
+  id: number;
+  event_name: string;
+  poster: string;
+  location: string;
+  description: string;
+  event_date: string;
+  category_id: number;
+  ticket_price: number;
+  created_at: string;
+  updated_at: string;
+  category: CategoryData;
+};
+
+export type ResponseDetailEvent = ResponseType<DetailEventData>;
+
+export async function getDetailEventById(
+  id: string,
+): Promise<ResponseDetailEvent> {
+  const {data} = await server.get<ResponseDetailEvent>(`events/${id}`);
 
   if (data.success) {
     return data;

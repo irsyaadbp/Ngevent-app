@@ -36,7 +36,9 @@ const Register: React.FC = () => {
     },
   });
 
-  const [dataForm, setDataForm] = React.useState({
+  const [dataForm, setDataForm] = React.useState<
+    RegisterInput & {[key: string]: string}
+  >({
     ...({} as RegisterInput),
     role: 'user',
   });

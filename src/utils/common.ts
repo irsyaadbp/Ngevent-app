@@ -12,3 +12,7 @@ export async function getUserData(): Promise<UserData> {
 export function formatDate(date: string, format = 'DD MMMM YYYY'): string {
   return moment(date).format(format);
 }
+
+export function formatWithoutNegative(value: any) {
+  return value.replace(/[^\d]/, '');
+}

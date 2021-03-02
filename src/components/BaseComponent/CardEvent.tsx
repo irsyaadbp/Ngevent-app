@@ -54,9 +54,7 @@ const CardEvent: React.FC<CardEventProps> = ({
           {data.description}
         </Text>
       </View>
-      {!!data.subtitle && (
-        <Text style={globalStyles.titleSmall}>{data.subtitle}</Text>
-      )}
+      {!!data.subtitle && <Text style={styles.subtitle}>{data.subtitle}</Text>}
     </TouchableOpacity>
   );
 };
@@ -81,6 +79,12 @@ const styles = StyleSheet.create({
   loading: {
     ...globalStyles.backgroundLoading,
     height: 144,
+  },
+  subtitle: {
+    ...globalStyles.titleSmall,
+    position: 'absolute',
+    right: 12,
+    top: 12,
   },
 });
 

@@ -5,3 +5,5 @@ export {default as BadgePrice} from './BadgePrice';
 
 export {default as CardEvent, CardEventLoading} from './CardEvent';
 export type {CardEventData} from './CardEvent';
+
+export {default as Header} from './Header';
