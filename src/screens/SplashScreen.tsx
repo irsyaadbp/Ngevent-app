@@ -2,7 +2,8 @@ import Statusbar from '@ngevent/components/BaseComponent/Statusbar';
 import {useUserContext} from '@ngevent/provider/UserProvider';
 import theme from '@ngevent/styles/theme';
 import {getUserData} from '@ngevent/utils/common';
-import {SCREEN_HEIGHT} from '@ngevent/utils/constants';
+import {KEY_USER, SCREEN_HEIGHT} from '@ngevent/utils/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import * as React from 'react';
 import {StatusBar, StyleSheet, View} from 'react-native';
@@ -16,7 +17,8 @@ const SplashScreen: React.FC = () => {
     const timeout = setTimeout(async () => {
       const isLoged = await getUserData();
 
-      if (isLoged) {
+      await AsyncStorage.removeItem(KEY_USER);
+      if (isLoged?.id) {
         setUser(isLoged);
         navigation.dispatch(
           CommonActions.reset({

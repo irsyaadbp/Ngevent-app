@@ -13,6 +13,8 @@ export type EventData = {
   ticket_price: number;
   created_at: string;
   updated_at: number;
+  total_ticket: number;
+  sold_ticket: number;
   category: CategoryData;
 };
 
@@ -50,6 +52,8 @@ export type DetailEventData = {
   description: string;
   event_date: string;
   category_id: number;
+  total_ticket: number;
+  sold_ticket: number;
   ticket_price: number;
   created_at: string;
   updated_at: string;

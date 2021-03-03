@@ -12,6 +12,7 @@ interface IButtonProps {
   style?: Animated.WithAnimatedValue<StyleProp<ViewStyle>> | undefined;
   background?: ColorsType | undefined;
   loading?: boolean;
+  disabled?: boolean;
 }
 const Button: React.FC<IButtonProps> = ({
   icon,
@@ -23,6 +24,7 @@ const Button: React.FC<IButtonProps> = ({
   children,
   background,
   loading = false,
+  disabled = false,
 }) => {
   const {colors} = useTheme();
 
@@ -60,7 +62,8 @@ const Button: React.FC<IButtonProps> = ({
       labelStyle={{color: colorLabel}}
       color={backgroundColor}
       style={[styleShadow, style]}
-      loading={loading}>
+      loading={loading}
+      disabled={disabled}>
       {children}
     </ButtonPaper>
   );

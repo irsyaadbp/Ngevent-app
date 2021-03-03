@@ -8,7 +8,9 @@ export type UserData = {
   email: string;
   username: string;
   fullname: string;
+  avatar: string;
   role: string;
+  token: string;
   favorite_id: number | null;
   created_at: string;
   updated_at: string;
@@ -42,24 +44,16 @@ type ResponseRegister = ResponseType<UserData>;
 export async function sendRegister(
   dataInput: RegisterInput,
 ): Promise<ResponseRegister> {
-  const {data} = await server.post<ResponseRegister>(
+  const {data, headers} = await server.post<ResponseRegister>(
     'auth/register',
     dataInput,
   );
 
   if (data.success) {
+    console.log(headers, 'header');
+
     await AsyncStorage.setItem(KEY_USER, JSON.stringify(data.data));
-    return data;
-  }
-  throw new Error(data.message || 'Some error occured');
-}
-
-type ResponseLogout = ResponseType<undefined>;
-export async function sendLogout(): Promise<ResponseLogout> {
-  const {data} = await server.post<ResponseLogout>('auth/logout');
-
-  if (data.success) {
-    await AsyncStorage.removeItem(KEY_USER);
+    // await AsyncStorage.setItem(KEY_TOKEN, headers.)
     return data;
   }
   throw new Error(data.message || 'Some error occured');

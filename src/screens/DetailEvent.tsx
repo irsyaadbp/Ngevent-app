@@ -2,6 +2,7 @@ import {
   BadgePrice,
   Button,
   Header,
+  LoadingBlock,
   Statusbar,
 } from '@ngevent/components/BaseComponent';
 import theme, {globalStyles} from '@ngevent/styles/theme';
@@ -9,6 +10,7 @@ import {HEADER_HEIGHT} from '@ngevent/utils/constants';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import * as React from 'react';
 import {
+  Alert,
   BackHandler,
   LayoutChangeEvent,
   RefreshControl,
@@ -22,11 +24,14 @@ import FastImage from 'react-native-fast-image';
 import {ActivityIndicator, Badge, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Feather';
 import {formatDate, formatWithoutNegative} from '@ngevent/utils/common';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {ParamRoute} from '@ngevent/types/propTypes';
 import {getDetailEventById} from '@ngevent/api/event';
+import moment from 'moment';
+import {sendCreateOrder} from '@ngevent/api/order';
 
 const DetailEvent: React.FC = ({}) => {
+  const queryClient = useQueryClient();
   const navigation = useNavigation();
   const route = useRoute<RouteProp<ParamRoute, 'DetailEvent'>>();
   const [refresh, setRefresh] = React.useState(false);
@@ -46,6 +51,29 @@ const DetailEvent: React.FC = ({}) => {
       },
     },
   );
+
+  const {mutate, isLoading: loadingCreate} = useMutation(sendCreateOrder, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['detail-events', {id: route.params.id}]);
+      setBook(0);
+      Alert.alert('Success', 'Successfully create order');
+    },
+    onError: (err) => {
+      Alert.alert('Error', err?.message || 'Something error occured');
+    },
+  });
+
+  const remainingTicket = React.useMemo(
+    () => Number(data?.data.total_ticket) - Number(data?.data.sold_ticket),
+    [data],
+  );
+
+  const isDateValid = React.useMemo(() => {
+    const eventDate = moment(data?.data.event_date);
+    const today = moment();
+
+    return eventDate.isAfter(today);
+  }, [data]);
 
   const refreshData = React.useCallback(async () => {
     setRefresh(true);
@@ -67,6 +95,21 @@ const DetailEvent: React.FC = ({}) => {
     return () => backHandler.remove();
   }, []);
 
+  const onSubmit = () => {
+    Alert.alert('Confirmation', 'Are you sure to order this ticket?', [
+      {text: 'Tidak', onPress: () => null},
+      {
+        text: 'Yes',
+        onPress: () =>
+          mutate({
+            event_id: route.params.id,
+            qty: dataBook.total_qty,
+            total_price: dataBook.total_price,
+          }),
+      },
+    ]);
+  };
+
   const getHeightLayoutTitle = (event: LayoutChangeEvent) => {
     const {height} = event.nativeEvent.layout;
     setMarginTop(height - HEADER_HEIGHT + 24);
@@ -80,97 +123,132 @@ const DetailEvent: React.FC = ({}) => {
 
   const renderBookSection = React.useCallback(() => {
     if (!isLoading) {
-      if (book) {
-        return (
-          <View
-            style={[
-              globalStyles.cardShadow,
-              styles.bookCard,
-              styles.marginBook,
-            ]}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <View>
-                <Text style={{color: theme.colors.placeholder}}>Total</Text>
-                <Text style={globalStyles.titleLarge}>
-                  ${Number(dataBook.total_price)}
-                </Text>
-              </View>
-              <View>
-                <Text style={styles.titleTicketLeft}>200 left</Text>
+      if (isDateValid) {
+        if (book) {
+          return (
+            <View style={[StyleSheet.absoluteFillObject, {zIndex: 11}]}>
+              <TouchableOpacity
+                style={[
+                  StyleSheet.absoluteFillObject,
+                  {backgroundColor: 'rgba(0 ,0,0 ,0.6)'},
+                ]}
+                onPress={() => setBook(0)}
+              />
+              <View
+                style={[
+                  globalStyles.cardShadow,
+                  styles.bookCard,
+                  styles.marginBook,
+                ]}>
+                <View style={styles.ticketSection}>
+                  <View>
+                    <Text style={{color: theme.colors.placeholder}}>Total</Text>
+                    <Text style={globalStyles.titleLarge}>
+                      ${Number(dataBook.total_price)}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text style={styles.titleTicketLeft}>
+                      {remainingTicket} left
+                    </Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <TouchableOpacity
+                        style={styles.btnMinus}
+                        onPress={() =>
+                          setDataBook((old) => {
+                            const newQty =
+                              old.total_qty !== 1 ? old.total_qty - 1 : 1;
+                            return {
+                              total_price:
+                                newQty * Number(data?.data.ticket_price),
+                              total_qty: newQty,
+                            };
+                          })
+                        }>
+                        <Icon name="minus" size={16} />
+                      </TouchableOpacity>
+                      <TextInput
+                        style={styles.inputNumber}
+                        textAlignVertical="center"
+                        keyboardType="number-pad"
+                        value={String(dataBook.total_qty)}
+                        onChangeText={(value) =>
+                          setDataBook((old) => {
+                            const newValue = +formatWithoutNegative(value);
+
+                            const newQty =
+                              newValue > remainingTicket
+                                ? remainingTicket
+                                : newValue;
+                            return {
+                              ...old,
+                              total_qty: newQty,
+                            };
+                          })
+                        }
+                      />
+                      <TouchableOpacity
+                        style={styles.btnPlus}
+                        onPress={() => {
+                          setDataBook((old) => {
+                            const accumulateQty = old.total_qty + 1;
+                            const newQty =
+                              accumulateQty > remainingTicket
+                                ? old.total_qty
+                                : accumulateQty;
+                            return {
+                              total_price:
+                                newQty * Number(data?.data.ticket_price),
+                              total_qty: newQty,
+                            };
+                          });
+                        }}>
+                        <Icon
+                          name="plus"
+                          size={16}
+                          color={theme.colors.background}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
                 <View style={{flexDirection: 'row'}}>
                   <TouchableOpacity
-                    style={styles.btnMinus}
-                    onPress={() =>
-                      setDataBook((old) => {
-                        const newQty =
-                          old.total_qty !== 0 ? old.total_qty - 1 : 0;
-                        return {
-                          total_price: newQty * Number(data?.data.ticket_price),
-                          total_qty: newQty,
-                        };
-                      })
-                    }>
-                    <Icon name="minus" size={16} />
+                    style={styles.btnDanger}
+                    onPress={() => setBook(0)}>
+                    <Icon name="x" color={theme.colors.danger} size={16} />
                   </TouchableOpacity>
-                  <TextInput
-                    style={styles.inputNumber}
-                    textAlignVertical="center"
-                    keyboardType="number-pad"
-                    value={String(dataBook.total_qty)}
-                    onChangeText={(value) =>
-                      setDataBook((old) => ({
-                        ...old,
-                        total_qty: +formatWithoutNegative(value),
-                      }))
-                    }
-                  />
-                  <TouchableOpacity
-                    style={styles.btnPlus}
-                    onPress={() => {
-                      setDataBook((old) => {
-                        const newQty = old.total_qty + 1;
-                        return {
-                          total_price: newQty * Number(data?.data.ticket_price),
-                          total_qty: newQty,
-                        };
-                      });
-                    }}>
-                    <Icon
-                      name="plus"
-                      size={16}
-                      color={theme.colors.background}
-                    />
-                  </TouchableOpacity>
+                  <View style={{flex: 1}}>
+                    <Button onPress={onSubmit}>Confirm</Button>
+                  </View>
                 </View>
               </View>
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                style={styles.btnDanger}
-                onPress={() => setBook(0)}>
-                <Icon name="x" color={theme.colors.danger} size={16} />
-              </TouchableOpacity>
-              <View style={{flex: 1}}>
-                <Button onPress={() => setBook(1)}>Book Now</Button>
-              </View>
-            </View>
-          </View>
-        );
-      } else {
-        return (
-          <Button style={styles.marginBook} onPress={() => setBook(1)}>
-            Book Now
-          </Button>
-        );
+          );
+        } else if (remainingTicket) {
+          return (
+            <Button style={styles.marginBook} onPress={() => setBook(1)}>
+              Book Now
+            </Button>
+          );
+        }
       }
+
+      return (
+        <TouchableOpacity
+          disabled
+          style={[styles.btnDisabled, styles.marginBook]}>
+          <Text style={{color: theme.colors.gray}}>Sold Out</Text>
+        </TouchableOpacity>
+      );
     }
-  }, [book, dataBook.total_qty, isLoading]);
+  }, [book, data, dataBook.total_qty, isDateValid, isLoading, remainingTicket]);
 
   return (
     <>
       <Statusbar type="secondary" />
       <View style={[globalStyles.screensWhite, styles.background]}>
+        {loadingCreate && <LoadingBlock />}
         <Header
           background="transparent"
           iconLeft="back"
@@ -225,15 +303,15 @@ const DetailEvent: React.FC = ({}) => {
                     {'  '}
                     {formatDate(
                       data?.data.event_date || '',
-                      'dddd, DD MMMM YYY',
+                      'dddd, DD MMMM YYYY',
                     )}
                   </Text>
-                  {/* <View style={styles.rowPrice}>
+                  <View style={styles.rowPrice}>
                     <BadgePrice price={Number(data?.data.ticket_price)} />
                     <Text style={{color: theme.colors.placeholder}}>
-                      2000+ participants
+                      {data?.data.sold_ticket} participants
                     </Text>
-                  </View> */}
+                  </View>
                 </View>
               </View>
               <View style={[styles.descSection, {marginTop}]}>
@@ -261,7 +339,7 @@ const styles = StyleSheet.create({
     height: IMAGE_HEIGHT,
     resizeMode: 'cover',
   },
-  header: {position: 'absolute', top: 0, left: 0, right: 0, zIndex: 999},
+  header: {position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10},
   background: {paddingTop: 0, paddingBottom: 0},
   titleSection: {
     position: 'absolute',
@@ -302,6 +380,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 4,
     justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 16,
   },
   btnMinus: {
@@ -321,6 +400,16 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
   },
+  btnDisabled: {
+    borderWidth: 1,
+    borderColor: theme.colors.grayLight,
+    backgroundColor: theme.colors.grayLight,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   titleTicketLeft: {
     color: theme.colors.placeholder,
     textAlign: 'right',
@@ -332,6 +421,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 8,
     fontWeight: 'bold',
+  },
+  ticketSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   loading: {
     ...globalStyles.backgroundLoading,
